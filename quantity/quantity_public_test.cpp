@@ -1,8 +1,26 @@
 #define CATCH_CONFIG_MAIN
+
 #include <catch.hpp>
+#include <type_traits>
 
 #include "quantity.h"
 #include "quantity.h"  // test include guard
+
+template <class T, class U>
+inline constexpr bool kAddable = requires(T a, U b) { a + b; };
+
+template <class T, class U>
+inline constexpr bool kSubtractable = requires(T a, U b) { a - b; };
+
+template <class T, class U>
+inline constexpr bool kComparable = requires(T a, U b) {
+  a < b;
+  a > b;
+  a <= b;
+  a >= b;
+  a == b;
+  a != b;
+};
 
 TEST_CASE("Static Assertions for Dimensions", "[quantity]") {
 
