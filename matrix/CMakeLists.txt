@@ -1,0 +1,1 @@
+add_executable(matrix_public_test matrix_public_test.cpp)
