@@ -1,0 +1,3 @@
+add_executable(vector2d_public_test vector2d_public_test.cpp)
+add_executable(vector2d_quantity_public_test vector2d_quantity_public_test.cpp)
+target_include_directories(vector2d_quantity_public_test PRIVATE ../quantity)
