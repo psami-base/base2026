@@ -1,1 +1,1 @@
-add_executable(quantity_public_test quantity_public_test.cpp)
+add_executable(quantity_test quantity_test.cpp)

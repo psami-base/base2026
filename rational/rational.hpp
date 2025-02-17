@@ -5,3 +5,5 @@ class RationalDivisionByZero : public std::runtime_error {
   RationalDivisionByZero() : std::runtime_error("RationalDivisionByZero") {
   }
 };
+
+// YOUR CODE ...

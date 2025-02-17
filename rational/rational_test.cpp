@@ -1,8 +1,11 @@
 #define CATCH_CONFIG_MAIN
-#include <catch.hpp>
+#include "catch.hpp"
 
-#include "rational.h"
-#include "rational.h"  // check include guards
+#include "rational.hpp"
+#include "rational.hpp"  // check include guards
+
+#include <type_traits>
+#include <iostream>
 
 void RationalEqual(const Rational& rational, const int64_t numerator, const int64_t denominator) {
   REQUIRE(rational.GetNumerator() == numerator);
@@ -10,7 +13,6 @@ void RationalEqual(const Rational& rational, const int64_t numerator, const int6
 }
 
 TEST_CASE("Constructors", "[Rational]") {
-
   SECTION("Default Constructor") {
     const auto r = Rational();
     RationalEqual(r, 0, 1);
@@ -20,7 +22,7 @@ TEST_CASE("Constructors", "[Rational]") {
     const auto r = Rational(2);
     RationalEqual(r, 2, 1);
 
-    const Rational q = -2;
+    Rational q = -2;
     RationalEqual(q, -2, 1);
   }
 
@@ -46,7 +48,6 @@ TEST_CASE("Constructors", "[Rational]") {
 }
 
 TEST_CASE("GettersAndSetters", "[Rational]") {
-
   SECTION("From Default") {
     auto r = Rational();
 
@@ -88,29 +89,23 @@ TEST_CASE("GettersAndSetters", "[Rational]") {
 
 TEST_CASE("Assignment", "[Rational]") {
   SECTION("+=") {
-    auto r = Rational(1, 3);
-    auto q = Rational{1, 6};
+    auto r = Rational{1, 3};
+    const auto q = Rational{1, 6};
 
     r += q;
     RationalEqual(r, 1, 2);
-    RationalEqual(q, 1, 6);
 
-    (r += std::as_const(q)) = {-13, 3};
-    RationalEqual(r, -13, 3);
-    RationalEqual(q, 1, 6);
+    static_assert(std::is_same_v<decltype(r += q), Rational&>, "Return type of += must be Rational&");
   }
 
   SECTION("-=") {
     auto r = Rational{2, 3};
-    auto q = Rational{1, 6};
+    const auto q = Rational{1, 6};
 
     r -= q;
     RationalEqual(r, 1, 2);
-    RationalEqual(q, 1, 6);
 
-    (r -= std::as_const(q)) = {-14, 3};
-    RationalEqual(r, -14, 3);
-    RationalEqual(q, 1, 6);
+    static_assert(std::is_same_v<decltype(r -= q), Rational&>, "Return type of -= must be Rational&");
   }
 
   SECTION("*=") {
@@ -136,6 +131,8 @@ TEST_CASE("Assignment", "[Rational]") {
 
     (r *= r) = {7, 8};
     RationalEqual(r, 7, 8);
+
+    static_assert(std::is_same_v<decltype(r *= positive), Rational&>, "Return type of *= must be Rational&");
   }
 
   SECTION("/=") {
@@ -151,6 +148,8 @@ TEST_CASE("Assignment", "[Rational]") {
 
     (r /= r) = {7, 8};
     RationalEqual(r, 7, 8);
+
+    static_assert(std::is_same_v<decltype(r /= positive), Rational&>, "Return type of /= must be Rational&");
   }
 }
 
@@ -163,6 +162,9 @@ TEST_CASE("Arithmetic", "[Rational]") {
     RationalEqual(+positive, 4, 7);
     RationalEqual(+negative, -7, 4);
     RationalEqual(+zero, 0, 1);
+
+    static_assert(std::is_same_v<std::remove_const_t<decltype(+positive)>, Rational>,
+                  "Return type of + must be Rational");
   }
 
   SECTION("Unary -") {
@@ -171,10 +173,11 @@ TEST_CASE("Arithmetic", "[Rational]") {
     const auto zero = Rational{};
 
     RationalEqual(-positive, -4, 7);
-    RationalEqual(positive, 4, 7);
     RationalEqual(-negative, 7, 4);
-    RationalEqual(negative, -7, 4);
     RationalEqual(-zero, 0, 1);
+
+    static_assert(std::is_same_v<std::remove_const_t<decltype(-positive)>, Rational>,
+                  "Return type of + must be Rational");
   }
 
   SECTION("Binary +") {
@@ -184,11 +187,13 @@ TEST_CASE("Arithmetic", "[Rational]") {
     RationalEqual(r + q, -13, 63);
     RationalEqual(q + r, -13, 63);
 
-    RationalEqual(r + Rational{-1, 7}, -1, 14);
-    RationalEqual(Rational{6, 13} + q, 43, 234);
+    RationalEqual(r + 2, 29, 14);
+    RationalEqual(2 + q, 31, 18);
 
     RationalEqual(Rational{2, 3} + Rational{-2, 3}, 0, 1);
     RationalEqual(Rational{2, 3} + Rational{2, 3}, 4, 3);
+
+    static_assert(std::is_same_v<std::remove_const_t<decltype(r + q)>, Rational>, "Return type of + must be Rational");
   }
 
   SECTION("Binary -") {
@@ -198,11 +203,13 @@ TEST_CASE("Arithmetic", "[Rational]") {
     RationalEqual(r - q, 22, 63);
     RationalEqual(q - r, -22, 63);
 
-    RationalEqual(q - Rational{-1, 7}, -17, 126);
-    RationalEqual(Rational{6, 13} - r, 71, 182);
+    RationalEqual(q - 2, -41, 18);
+    RationalEqual(2 - r, 27, 14);
 
     RationalEqual(Rational{2, 3} - Rational{2, 3}, 0, 1);
     RationalEqual(Rational{2, 3} - Rational{-2, 3}, 4, 3);
+
+    static_assert(std::is_same_v<std::remove_const_t<decltype(r - q)>, Rational>, "Return type of - must be Rational");
   }
 
   SECTION("Binary *") {
@@ -212,15 +219,17 @@ TEST_CASE("Arithmetic", "[Rational]") {
 
     RationalEqual(positive * negative, -6, 7);
     RationalEqual(negative * positive, -6, 7);
-
     RationalEqual(positive * zero, 0, 1);
     RationalEqual(zero * negative, 0, 1);
 
-    RationalEqual(positive * Rational{13, 11}, 234, 385);
-    RationalEqual(Rational{-7, 11} * negative, 35, 33);
+    RationalEqual(positive * (-2), -36, 35);
+    RationalEqual((-2) * negative, 10, 3);
 
     RationalEqual(Rational{2, 3} * Rational{3, 2}, 1, 1);
     RationalEqual(Rational{-1, 1} * Rational{-1, 1}, 1, 1);
+
+    static_assert(std::is_same_v<std::remove_const_t<decltype(positive * negative)>, Rational>,
+                  "Return type of * must be Rational");
   }
 
   SECTION("Binary /") {
@@ -230,15 +239,17 @@ TEST_CASE("Arithmetic", "[Rational]") {
 
     RationalEqual(positive / negative, -6, 7);
     RationalEqual(negative / positive, -7, 6);
-
     RationalEqual(zero / positive, 0, 1);
     RationalEqual(zero / negative, 0, 1);
 
-    RationalEqual(positive / Rational{7, 11}, 198, 245);
-    RationalEqual(Rational{-7, 11} / negative, 35, 33);
+    RationalEqual(positive / (-2), -9, 35);
+    RationalEqual((-2) / negative, 10, 3);
 
     RationalEqual(Rational{2, 3} / Rational{2, 3}, 1, 1);
     RationalEqual(Rational{-1, 1} / Rational{-1, 1}, 1, 1);
+
+    static_assert(std::is_same_v<std::remove_const_t<decltype(positive / negative)>, Rational>,
+                  "Return type of / must be Rational");
   }
 
   SECTION("Prefix ++") {
@@ -246,9 +257,10 @@ TEST_CASE("Arithmetic", "[Rational]") {
 
     ++r;
     RationalEqual(r, 1, 2);
-    RationalEqual(++r, 3, 2);
-    ++r = -1;
-    RationalEqual(r, -1, 1);
+    ++r;
+    RationalEqual(r, 3, 2);
+
+    static_assert(std::is_same_v<decltype(++r), Rational&>, "Return type of prefix ++ must be Rational&");
   }
 
   SECTION("Postfix ++") {
@@ -258,6 +270,8 @@ TEST_CASE("Arithmetic", "[Rational]") {
     RationalEqual(r, 1, 2);
     RationalEqual(r++, 1, 2);
     RationalEqual(r, 3, 2);
+
+    static_assert(std::is_same_v<decltype(r++), Rational>, "Return type of postfix ++ must be Rational");
   }
 
   SECTION("Prefix --") {
@@ -265,9 +279,10 @@ TEST_CASE("Arithmetic", "[Rational]") {
 
     --r;
     RationalEqual(r, -1, 2);
-    RationalEqual(--r, -3, 2);
-    --r = -1;
-    RationalEqual(r, -1, 1);
+    --r;
+    RationalEqual(r, -3, 2);
+
+    static_assert(std::is_same_v<decltype(--r), Rational&>, "Return type of prefix -- must be Rational&");
   }
 
   SECTION("Postfix --") {
@@ -277,6 +292,8 @@ TEST_CASE("Arithmetic", "[Rational]") {
     RationalEqual(r, -1, 2);
     RationalEqual(r--, -1, 2);
     RationalEqual(r, -3, 2);
+
+    static_assert(std::is_same_v<decltype(r--), Rational>, "Return type of postfix -- must be Rational");
   }
 }
 
@@ -341,45 +358,45 @@ TEST_CASE("Comparisons", "[Rational]") {
 
   CheckComparisonEqual(zero, zero);
 
-  REQUIRE(n_4_9 < 0);
-  REQUIRE_FALSE(0 > p_4_9);
+  REQUIRE((n_4_9 < 0));
+  REQUIRE_FALSE((0 > p_4_9));
+  REQUIRE((zero == 0));
 }
 
 TEST_CASE("IO", "[Rational]") {
-
   SECTION("Input Rational") {
     auto ss = std::stringstream("-7/3 4/6 -4/-8 0/4 +5/-3 -3/5");
-    auto p = Rational{};
-    auto q = Rational{};
+    auto r1 = Rational{};
+    auto r2 = Rational{};
 
-    ss >> p >> q;
-    RationalEqual(p, -7, 3);
-    RationalEqual(q, 2, 3);
+    ss >> r1 >> r2;
+    RationalEqual(r1, -7, 3);
+    RationalEqual(r2, 2, 3);
 
-    ss >> p >> q;
-    RationalEqual(p, 1, 2);
-    RationalEqual(q, 0, 1);
+    ss >> r1 >> r2;
+    RationalEqual(r1, 1, 2);
+    RationalEqual(r2, 0, 1);
 
-    ss >> p >> q;
-    RationalEqual(p, -5, 3);
-    RationalEqual(q, -3, 5);
+    ss >> r1 >> r2;
+    RationalEqual(r1, -5, 3);
+    RationalEqual(r2, -3, 5);
   }
 
   SECTION("Input Integer") {
     auto ss = std::stringstream("7 -4 0 -0 +1");
-    auto p = Rational{};
-    auto q = Rational{};
+    auto r1 = Rational{};
+    auto r2 = Rational{};
 
-    ss >> p >> q;
-    RationalEqual(p, 7, 1);
-    RationalEqual(q, -4, 1);
+    ss >> r1 >> r2;
+    RationalEqual(r1, 7, 1);
+    RationalEqual(r2, -4, 1);
 
-    ss >> p >> q;
-    RationalEqual(p, 0, 1);
-    RationalEqual(q, 0, 1);
+    ss >> r1 >> r2;
+    RationalEqual(r1, 0, 1);
+    RationalEqual(r2, 0, 1);
 
-    ss >> p;
-    RationalEqual(p, 1, 1);
+    ss >> r1;
+    RationalEqual(r1, 1, 1);
   }
 
   SECTION("Output") {
@@ -393,23 +410,22 @@ TEST_CASE("IO", "[Rational]") {
 }
 
 TEST_CASE("DivisionByZero", "[Rational]") {
-
-  SECTION("on construction") {
+  SECTION("On construction") {
     REQUIRE_THROWS_AS(Rational(11, 0), RationalDivisionByZero);  // NOLINT
   }
 
-  SECTION("on division") {
+  SECTION("On division") {
     auto r = Rational{3, 5};
     REQUIRE_THROWS_AS((r /= 0), RationalDivisionByZero);                    // NOLINT
     REQUIRE_THROWS_AS((void)(Rational{8, 7} / 0), RationalDivisionByZero);  // NOLINT
   }
 
-  SECTION("on setter") {
+  SECTION("On SetDenominator") {
     auto r = Rational{3, 5};
     REQUIRE_THROWS_AS(r.SetDenominator(0), RationalDivisionByZero);  // NOLINT
   }
 
-  SECTION("on input") {
+  SECTION("On input") {
     auto ss = std::stringstream("1/0");
     auto r = Rational{};
 

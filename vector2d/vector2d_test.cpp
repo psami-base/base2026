@@ -1,11 +1,14 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-#include "vector2d.h"
-#include "vector2d.h"  // test include guards
+#include "vector2d.hpp"
+#include "vector2d.hpp"  // test include guards
 
 template <class T, class U>
-inline constexpr auto kAddable = requires(T x, U y) { x + y; };
+inline constexpr auto kAddable = requires(T x, U y) {
+  x + y;
+  y + x;
+};
 
 TEST_CASE("Vector2D Initialization", "[vector2d]") {
   SECTION("Initialization with double") {

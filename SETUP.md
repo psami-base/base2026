@@ -29,7 +29,7 @@ git stash pop
 
 ```
 cmake ..
-make <название задачи>_public_test
+make <название задачи>_test
 ```
 
 В случае успеха вы увидите примерно следующее:
@@ -50,19 +50,19 @@ make <название задачи>_public_test
 -- Found GTest: /usr/lib/x86_64-linux-gnu/libgtest.a  
 -- Configuring done
 -- Generating done
--- Build files have been written to: /home/vsm/Desktop/OOP_2021/public_testing/sum/build
-Scanning dependencies of target sum_public_test
-[ 33%] Building CXX object CMakeFiles/sum_public_test.dir/home/vsm/Desktop/cpp/sum/sum.cpp.o
-[ 66%] Building CXX object CMakeFiles/sum_public_test.dir/sum_public_test.cpp.o
-[100%] Linking CXX executable sum_public_test
-[100%] Built target sum_public_test
+-- Build files have been written to: /home/vsm/Desktop/OOP_2021/testing/sum/build
+Scanning dependencies of target sum_test
+[ 33%] Building CXX object CMakeFiles/sum_test.dir/home/vsm/Desktop/cpp/sum/sum.cpp.o
+[ 66%] Building CXX object CMakeFiles/sum_test.dir/sum_test.cpp.o
+[100%] Linking CXX executable sum_test
+[100%] Built target sum_test
 ```
 Решение собралось под всеми флагами, это уже что-то.
 
 4. Далее запускаем тестирование.
 
 ```
-./<название задачи>_public_test
+./<название задачи>_test
 ```
 
 ```

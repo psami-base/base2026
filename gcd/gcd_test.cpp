@@ -1,11 +1,11 @@
 #define CATCH_CONFIG_MAIN
-#include <catch.hpp>
+#include "catch.hpp"
+
+#include "gcd.hpp"
+#include "gcd.hpp"  // check include guards
 
 #include <type_traits>
 #include <cstdint>
-
-#include "gcd.h"
-#include "gcd.h"  // check include guards
 
 TEST_CASE("Gcd", "[Gcd]") {
   REQUIRE(Gcd(1, 1) == 1);
@@ -22,8 +22,8 @@ TEST_CASE("Gcd", "[Gcd]") {
 }
 
 TEST_CASE("ReturnTypeMatchesTemplateParameter", "[Gcd]") {
-  using SignedType = decltype(Gcd<int32_t>(1, 1));
+  using SignedType = decltype(Gcd<int16_t>(1, 1));
   using UnsignedType = decltype(Gcd<uint64_t>(1, 1));
-  REQUIRE((std::is_same_v<SignedType, int32_t>));
-  REQUIRE((std::is_same_v<UnsignedType, uint64_t>));
+  static_assert(std::is_same_v<SignedType, int16_t>, "Gcd<int16_t> must return int16_t");
+  static_assert(std::is_same_v<UnsignedType, uint64_t>, "Gcd<uint64_t> must return uint64_t");
 }

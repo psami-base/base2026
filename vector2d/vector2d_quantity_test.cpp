@@ -1,17 +1,23 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-#include "vector2d.h"
-#include "vector2d.h"  // test include guards
+#include "vector2d.hpp"
+#include "vector2d.hpp"  // test include guards
 
-#include "quantity.h"
-#include "quantity.h"  // test include guards
-
-template <class T, class U>
-inline constexpr auto kAddable = requires(T x, U y) { x + y; };
+#include "quantity.hpp"
+#include "quantity.hpp"  // test include guards
 
 template <class T, class U>
-inline constexpr auto kSubtractable = requires(T x, U y) { x - y; };
+inline constexpr auto kAddable = requires(T x, U y) {
+  x + y;
+  y + x;
+};
+
+template <class T, class U>
+inline constexpr auto kSubtractable = requires(T x, U y) {
+  x - y;
+  y - x;
+};
 
 TEST_CASE("Quantity Vector initialization", "[quantity vector]") {
   SECTION("Initialization with Mass") {

@@ -1,10 +1,10 @@
 #define CATCH_CONFIG_MAIN
-#include <catch.hpp>
+#include "catch.hpp"
+
+#include "string_view.hpp"
+#include "string_view.hpp"  // Test include guard
 
 #include <type_traits>
-
-#include "string_view.h"
-#include "string_view.h"
 
 void Equal(const StringView& actual, const char* expected, size_t n) {
   REQUIRE(actual.Data() == expected);
@@ -17,45 +17,48 @@ void Equal(const StringView& actual, const char* expected, size_t n) {
 }
 
 TEST_CASE("Default Constructor", "[StringView]") {
-  const StringView sv;
+  const auto sv = StringView();
   Equal(sv, nullptr, 0);
 }
 
 TEST_CASE("From C String", "[StringView]") {
-  const char* str = "aba";
-  const StringView sv = str;
+  static_assert(std::is_convertible_v<const char*, StringView>,
+                "StringView must be implicitly constructible from const char*");
+
+  const auto str = "aba";
+  const auto sv = StringView(str);
   Equal(sv, str, 3);
 }
 
 TEST_CASE("From C Substring", "[StringView]") {
-  const char* str = "abacaba";
-  const StringView sv(str + 2, 4);
+  const auto str = "abacaba";
+  const auto sv = StringView(str + 2, 4);
   Equal(sv, str + 2, 4);
 }
 
 TEST_CASE("Copy", "[StringView]") {
-  const char* str = "abacaba";
-  const StringView sv(str + 2, 4);
+  const auto str = "abacaba";
+  const auto sv = StringView(str + 2, 4);
   const auto copy = sv;
   Equal(sv, str + 2, 4);
   Equal(copy, str + 2, 4);
 }
 
 TEST_CASE("Data access", "[StringView]") {
-  static_assert(!std::is_assignable_v<decltype(std::declval<StringView&>().Front()), char>);
-  static_assert(!std::is_assignable_v<decltype(std::declval<StringView&>().Back()), char>);
-  static_assert(!std::is_assignable_v<decltype(std::declval<StringView&>()[0]), char>);
-
   const StringView sv = "abcdef";
 
   REQUIRE(sv.Front() == 'a');
   REQUIRE(sv.Back() == 'f');
   REQUIRE(sv[1] == 'b');
+
+  static_assert(std::is_same_v<decltype(sv.Front()), const char&>, "Front() must return const char&");
+  static_assert(std::is_same_v<decltype(sv.Back()), const char&>, "Back() must return const char&");
+  static_assert(std::is_same_v<decltype(sv[0]), const char&>, "operator[] must return const char&");
 }
 
 TEST_CASE("RemovePrefix", "[StringView]") {
-  const char* str = "some_test_string";
-  StringView sv = str;
+  const auto str = "some_test_string";
+  auto sv = StringView(str);
 
   sv.RemovePrefix(5);
   Equal(sv, str + 5, 11);
@@ -71,8 +74,8 @@ TEST_CASE("RemovePrefix", "[StringView]") {
 }
 
 TEST_CASE("RemoveSuffix", "[StringView]") {
-  const char* str = "some_test_string";
-  StringView sv = str;
+  const auto str = "some_test_string";
+  auto sv = StringView(str);
 
   sv.RemoveSuffix(5);
   Equal(sv, str, 11);
@@ -87,9 +90,9 @@ TEST_CASE("RemoveSuffix", "[StringView]") {
   Equal(sv, str, 0);
 }
 
-TEST_CASE("Substr", "[Modifications]") {
-  const char* str = "some_test_string";
-  StringView sv = str;
+TEST_CASE("Substr", "[StringView]") {
+  const auto str = "some_test_string";
+  const auto sv = StringView(str);
 
   Equal(sv.Substr(0, 5), str, 5);
   Equal(sv, str, 16);
@@ -104,9 +107,9 @@ TEST_CASE("Substr", "[Modifications]") {
   Equal(sv, str, 16);
 }
 
-TEST_CASE("Swap", "[Modifications]") {
-  const char* str = "some_test_string";
-  StringView sv = str;
+TEST_CASE("Swap", "[StringView]") {
+  const auto str = "some_test_string";
+  auto sv = StringView(str);
 
   sv.Substr(2, 7).Swap(sv);
   Equal(sv, str + 2, 7);

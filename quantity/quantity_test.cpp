@@ -1,16 +1,22 @@
 #define CATCH_CONFIG_MAIN
+#include "catch.hpp"
 
-#include <catch.hpp>
+#include "quantity.hpp"
+#include "quantity.hpp"  // test include guard
+
 #include <type_traits>
 
-#include "quantity.h"
-#include "quantity.h"  // test include guard
+template <class T, class U>
+inline constexpr bool kAddable = requires(T a, U b) {
+  a + b;
+  b + a;
+};
 
 template <class T, class U>
-inline constexpr bool kAddable = requires(T a, U b) { a + b; };
-
-template <class T, class U>
-inline constexpr bool kSubtractable = requires(T a, U b) { a - b; };
+inline constexpr bool kSubtractable = requires(T a, U b) {
+  a - b;
+  b - a;
+};
 
 template <class T, class U>
 inline constexpr bool kComparable = requires(T a, U b) {
@@ -214,7 +220,8 @@ TEST_CASE("Physical Calculations", "[quantity]") {
     const auto h = Length{10.0};              // meters
     const auto potential_energy = m * g * h;  // Should be Energy
     REQUIRE(potential_energy.value == Approx(196.0));
-    static_assert(std::is_same_v<decltype(potential_energy), const Energy>, "Mass * Acceleration * Length should be Energy");
+    static_assert(std::is_same_v<decltype(potential_energy), const Energy>,
+                  "Mass * Acceleration * Length should be Energy");
   }
 }
 
@@ -245,7 +252,8 @@ TEST_CASE("Chained Operations", "[quantity]") {
   SECTION("Combined Calculation") {
     const auto result = (m * g * l) / t;  // Dimensions: [T=-3, L=2, M=1]
     REQUIRE(result.value == Approx(7.35));
-    static_assert(std::is_same_v<decltype(result), const Quantity<-3, 2, 1>>, "Result should have dimensions [T=-3, L=2, M=1]");
+    static_assert(std::is_same_v<decltype(result), const Quantity<-3, 2, 1>>,
+                  "Result should have dimensions [T=-3, L=2, M=1]");
   }
 }
 

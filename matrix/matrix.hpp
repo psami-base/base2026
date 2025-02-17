@@ -6,8 +6,4 @@ class MatrixIsDegenerateError : public std::runtime_error {
   }
 };
 
-class MatrixOutOfRange : public std::out_of_range {
- public:
-  MatrixOutOfRange() : std::out_of_range("MatrixOutOfRange") {
-  }
-};
+// YOUR CODE ...
