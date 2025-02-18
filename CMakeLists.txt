@@ -10,7 +10,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS  ON)
 
 include_directories(.)
 
-# add_subdirectory(any)
+add_subdirectory(any)
 add_subdirectory(array)
 # add_subdirectory(array_traits)
 # add_subdirectory(calculator)
