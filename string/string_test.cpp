@@ -82,6 +82,34 @@ TEST_CASE("Copy Constructor", "[String]") {
   }
 }
 
+TEST_CASE("Move Constructor", "[String]") {
+  static_assert(std::is_nothrow_move_constructible_v<String>, "Move constructor must be marked noexcept");
+
+  {
+    auto empty = String();
+    const auto copy = std::move(empty);
+    REQUIRE(empty.Size() == 0u);
+    REQUIRE(empty.Capacity() == 0u);
+    REQUIRE(empty.Data() == nullptr);
+    REQUIRE(copy.Size() == 0u);
+    REQUIRE(copy.Capacity() == 0u);
+    REQUIRE(copy.Data() == nullptr);
+  }
+
+  {
+    auto s = String("abacaba");
+    const auto data = s.Data();
+    const auto capacity = s.Capacity();
+    const auto copy = std::move(s);
+    REQUIRE(s.Size() == 0u);       // NOLINT
+    REQUIRE(s.Capacity() == 0u);   // NOLINT
+    REQUIRE(s.Data() == nullptr);  // NOLINT
+    REQUIRE(copy.Size() == 7u);
+    REQUIRE(copy.Capacity() == capacity);
+    REQUIRE(copy.Data() == data);
+  }
+}
+
 TEST_CASE("Copy Assignment", "[String]") {
   SECTION("Empty to empty") {
     const auto empty = String();
@@ -139,6 +167,67 @@ TEST_CASE("Copy Assignment", "[String]") {
     CheckEqual(large, std::string(1000, 'b'));
     CheckEqual(small, std::string(1000, 'b'));
     REQUIRE(large.Data() != small.Data());
+  }
+}
+
+TEST_CASE("Move Assignment", "[String]") {
+  static_assert(std::is_nothrow_move_assignable_v<String>, "Move assignment must be marked noexcept");
+
+  SECTION("Empty to empty") {
+    auto empty = String();
+    auto s = String();
+    s = std::move(empty);
+    REQUIRE(empty.Size() == 0u);
+    REQUIRE(empty.Capacity() == 0u);
+    REQUIRE(empty.Data() == nullptr);
+    REQUIRE(s.Size() == 0u);
+    REQUIRE(s.Capacity() == 0u);
+    REQUIRE(s.Data() == nullptr);
+  }
+
+  SECTION("Empty to filled") {
+    auto empty = String();
+    auto s = String("abacaba");
+    s = std::move(empty);
+    REQUIRE(empty.Size() == 0u);
+    REQUIRE(empty.Capacity() == 0u);
+    REQUIRE(empty.Data() == nullptr);
+    REQUIRE(s.Size() == 0u);
+    REQUIRE(s.Capacity() == 0u);
+    REQUIRE(s.Data() == nullptr);
+  }
+
+  SECTION("Filled to empty") {
+    auto init = String("abacaba");
+    const auto data = init.Data();
+    const auto capacity = init.Capacity();
+    auto s = String();
+    s = std::move(init);
+    REQUIRE(init.Size() == 0u);       // NOLINT
+    REQUIRE(init.Capacity() == 0u);   // NOLINT
+    REQUIRE(init.Data() == nullptr);  // NOLINT
+    REQUIRE(s.Size() == 7u);
+    REQUIRE(s.Capacity() == capacity);
+    REQUIRE(s.Data() == data);
+
+    REQUIRE(s.Size() == 7u);            // NOLINT
+    REQUIRE(s.Capacity() == capacity);  // NOLINT
+    REQUIRE(s.Data() == data);          // NOLINT
+  }
+
+  SECTION("Filled to filled") {
+    auto a = String(10, 'a');
+    const auto data = a.Data();
+    const auto capacity = a.Capacity();
+    auto b = String(1000, 'b');
+    b = std::move(a);
+
+    REQUIRE(a.Size() == 0u);       // NOLINT
+    REQUIRE(a.Capacity() == 0u);   // NOLINT
+    REQUIRE(a.Data() == nullptr);  // NOLINT
+    REQUIRE(b.Size() == 10u);
+    REQUIRE(b.Capacity() == capacity);
+    REQUIRE(b.Data() == data);
   }
 }
 
