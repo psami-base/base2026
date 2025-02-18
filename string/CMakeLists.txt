@@ -1,0 +1,1 @@
+add_executable(string_test string.cpp string_test.cpp)
