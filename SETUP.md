@@ -12,7 +12,7 @@
 
 * clang-format (`sudo apt install clang-format`)
 
-Клонируйте данный репозиторий на свой компьютер (`git clone https://gitlab.com/ibr11/cpp_psami_base_2023.git`). В его корне создайте папку `build` (`mkdir build`).
+Клонируйте данный репозиторий на свой компьютер (`git clone https://gitlab.com/ibr11/base_2024.git`). В его корне создайте папку `build` (`mkdir build`).
 
 ### Инструкция по сдаче задач
 
