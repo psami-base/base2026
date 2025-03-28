@@ -1,1 +1,2 @@
+add_subdirectory(enumerate)
 add_subdirectory(range)
