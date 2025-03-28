@@ -1,0 +1,1 @@
+add_executable(enumerate_test enumerate_test.cpp)
