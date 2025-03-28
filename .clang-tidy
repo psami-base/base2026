@@ -48,3 +48,5 @@ CheckOptions:
     value: expr-type
   - key: readability-identifier-naming.MethodIgnoredRegexp
     value: 'begin|end|cbegin|cend|rbegin|rend|crbegin|crend'
+  - key: readability-identifier-naming.TypeAliasIgnoredRegexp
+    value: '(value_type|reference|const_reference|pointer|const_pointer|iterator|const_iterator|reverse_iterator|const_reverse_iterator|difference_type|size_type|iterator_category)'
