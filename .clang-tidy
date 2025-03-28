@@ -46,3 +46,5 @@ CheckOptions:
     value: _t
   - key: readability-identifier-naming.TypeTemplateParameterIgnoredRegexp
     value: expr-type
+  - key: readability-identifier-naming.MethodIgnoredRegexp
+    value: 'begin|end|cbegin|cend|rbegin|rend|crbegin|crend'
