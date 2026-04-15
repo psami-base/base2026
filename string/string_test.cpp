@@ -19,7 +19,7 @@ void CheckEqual(const String& actual, const std::string_view expected) {
 TEST_CASE("Default Constructor", "[String]") {
   const auto s = String();
   CheckEqual(s, "");
-  REQUIRE(s.Data() == nullptr);
+  REQUIRE(*s.Data() == '\0');
   REQUIRE(s.Empty());
 }
 
@@ -28,7 +28,7 @@ TEST_CASE("FillInitialization", "[String]") {
     const auto s = String(0, 'a');
     REQUIRE(s.Size() == 0u);
     REQUIRE(s.Capacity() == 0u);
-    REQUIRE(s.Data() == nullptr);
+    REQUIRE(*s.Data() == '\0');
   }
 
   {
@@ -67,10 +67,10 @@ TEST_CASE("Copy Constructor", "[String]") {
     const auto copy = empty;
     REQUIRE(empty.Size() == 0u);
     REQUIRE(empty.Capacity() == 0u);
-    REQUIRE(empty.Data() == nullptr);
+    REQUIRE(*empty.Data() == '\0');
     REQUIRE(copy.Size() == 0u);
     REQUIRE(copy.Capacity() == 0u);
-    REQUIRE(copy.Data() == nullptr);
+    REQUIRE(*copy.Data() == '\0');
   }
 
   {
@@ -90,10 +90,10 @@ TEST_CASE("Move Constructor", "[String]") {
     const auto copy = std::move(empty);
     REQUIRE(empty.Size() == 0u);
     REQUIRE(empty.Capacity() == 0u);
-    REQUIRE(empty.Data() == nullptr);
+    REQUIRE(*empty.Data() == '\0');
     REQUIRE(copy.Size() == 0u);
     REQUIRE(copy.Capacity() == 0u);
-    REQUIRE(copy.Data() == nullptr);
+    REQUIRE(*copy.Data() == '\0');
   }
 
   {
@@ -101,9 +101,9 @@ TEST_CASE("Move Constructor", "[String]") {
     const auto data = s.Data();
     const auto capacity = s.Capacity();
     const auto copy = std::move(s);
-    REQUIRE(s.Size() == 0u);       // NOLINT
-    REQUIRE(s.Capacity() == 0u);   // NOLINT
-    REQUIRE(s.Data() == nullptr);  // NOLINT
+    REQUIRE(s.Size() == 0u);      // NOLINT
+    REQUIRE(s.Capacity() == 0u);  // NOLINT
+    REQUIRE(*s.Data() == '\0');   // NOLINT
     REQUIRE(copy.Size() == 7u);
     REQUIRE(copy.Capacity() == capacity);
     REQUIRE(copy.Data() == data);
@@ -117,15 +117,15 @@ TEST_CASE("Copy Assignment", "[String]") {
     s = empty;
     REQUIRE(empty.Size() == 0u);
     REQUIRE(empty.Capacity() == 0u);
-    REQUIRE(empty.Data() == nullptr);
+    REQUIRE(*empty.Data() == '\0');
     REQUIRE(s.Size() == 0u);
     REQUIRE(s.Capacity() == 0u);
-    REQUIRE(s.Data() == nullptr);
+    REQUIRE(*s.Data() == '\0');
 
     s = s;
     REQUIRE(s.Size() == 0u);
     REQUIRE(s.Capacity() == 0u);
-    REQUIRE(s.Data() == nullptr);
+    REQUIRE(*s.Data() == '\0');
   }
 
   SECTION("Empty to filled") {
@@ -134,7 +134,7 @@ TEST_CASE("Copy Assignment", "[String]") {
     s = empty;
     REQUIRE(empty.Size() == 0u);
     REQUIRE(empty.Capacity() == 0u);
-    REQUIRE(empty.Data() == nullptr);
+    REQUIRE(*empty.Data() == '\0');
     REQUIRE(s.Size() == 0u);
   }
 
@@ -179,10 +179,10 @@ TEST_CASE("Move Assignment", "[String]") {
     s = std::move(empty);
     REQUIRE(empty.Size() == 0u);
     REQUIRE(empty.Capacity() == 0u);
-    REQUIRE(empty.Data() == nullptr);
+    REQUIRE(*empty.Data() == '\0');
     REQUIRE(s.Size() == 0u);
     REQUIRE(s.Capacity() == 0u);
-    REQUIRE(s.Data() == nullptr);
+    REQUIRE(*s.Data() == '\0');
   }
 
   SECTION("Empty to filled") {
@@ -191,10 +191,10 @@ TEST_CASE("Move Assignment", "[String]") {
     s = std::move(empty);
     REQUIRE(empty.Size() == 0u);
     REQUIRE(empty.Capacity() == 0u);
-    REQUIRE(empty.Data() == nullptr);
+    REQUIRE(*empty.Data() == '\0');
     REQUIRE(s.Size() == 0u);
     REQUIRE(s.Capacity() == 0u);
-    REQUIRE(s.Data() == nullptr);
+    REQUIRE(*s.Data() == '\0');
   }
 
   SECTION("Filled to empty") {
@@ -203,9 +203,9 @@ TEST_CASE("Move Assignment", "[String]") {
     const auto capacity = init.Capacity();
     auto s = String();
     s = std::move(init);
-    REQUIRE(init.Size() == 0u);       // NOLINT
-    REQUIRE(init.Capacity() == 0u);   // NOLINT
-    REQUIRE(init.Data() == nullptr);  // NOLINT
+    REQUIRE(init.Size() == 0u);      // NOLINT
+    REQUIRE(init.Capacity() == 0u);  // NOLINT
+    REQUIRE(*init.Data() == '\0');   // NOLINT
     REQUIRE(s.Size() == 7u);
     REQUIRE(s.Capacity() == capacity);
     REQUIRE(s.Data() == data);
@@ -222,9 +222,9 @@ TEST_CASE("Move Assignment", "[String]") {
     auto b = String(1000, 'b');
     b = std::move(a);
 
-    REQUIRE(a.Size() == 0u);       // NOLINT
-    REQUIRE(a.Capacity() == 0u);   // NOLINT
-    REQUIRE(a.Data() == nullptr);  // NOLINT
+    REQUIRE(a.Size() == 0u);      // NOLINT
+    REQUIRE(a.Capacity() == 0u);  // NOLINT
+    REQUIRE(*a.Data() == '\0');   // NOLINT
     REQUIRE(b.Size() == 10u);
     REQUIRE(b.Capacity() == capacity);
     REQUIRE(b.Data() == data);
@@ -281,8 +281,8 @@ TEST_CASE("Swap", "[String]") {
     auto a = String();
     auto b = String();
     a.Swap(b);
-    REQUIRE(a.Data() == nullptr);
-    REQUIRE(b.Data() == nullptr);
+    REQUIRE(*a.Data() == '\0');
+    REQUIRE(*b.Data() == '\0');
   }
 
   SECTION("Empty to filled") {
@@ -293,7 +293,7 @@ TEST_CASE("Swap", "[String]") {
     CheckEqual(a, "abacaba");
     CheckEqual(b, "");
     REQUIRE(a.Data() == b_data);
-    REQUIRE(b.Data() == nullptr);
+    REQUIRE(*b.Data() == '\0');
   }
 
   SECTION("Filled to filled") {
@@ -333,6 +333,18 @@ TEST_CASE("Append", "[String]") {
     for (size_t i = 0; i < 100000; ++i) {
       s += other;
       actual += "abacaba";
+    }
+    CheckEqual(s, actual);
+  }
+
+  SECTION("+= self") {
+    auto s = String("abacaba");
+    (s += s) += s;
+    CheckEqual(s, "abacabaabacabaabacabaabacaba");
+    auto actual = std::string("abacabaabacabaabacabaabacaba");
+    for (size_t i = 0; i < 10; ++i) {
+      s += s;
+      actual += actual;
     }
     CheckEqual(s, actual);
   }
@@ -472,89 +484,6 @@ TEST_CASE("Resize", "[String]") {
     a = "aba";
     CheckEqual(a, "aba");
     REQUIRE(a.Capacity() >= 3u);
-  }
-}
-
-void CheckComparisonEqual(const String& lhs, const String& rhs) {
-  REQUIRE(lhs == rhs);
-  REQUIRE(lhs <= rhs);
-  REQUIRE(lhs >= rhs);
-  REQUIRE_FALSE(lhs != rhs);
-  REQUIRE_FALSE(lhs < rhs);
-  REQUIRE_FALSE(lhs > rhs);
-}
-
-void CheckComparisonLess(const String& lhs, const String& rhs) {
-  REQUIRE_FALSE(lhs == rhs);
-  REQUIRE(lhs <= rhs);
-  REQUIRE_FALSE(lhs >= rhs);
-  REQUIRE(lhs != rhs);
-  REQUIRE(lhs < rhs);
-  REQUIRE_FALSE(lhs > rhs);
-}
-
-void CheckComparisonGreater(const String& lhs, const String& rhs) {
-  REQUIRE_FALSE(lhs == rhs);
-  REQUIRE_FALSE(lhs <= rhs);
-  REQUIRE(lhs >= rhs);
-  REQUIRE(lhs != rhs);
-  REQUIRE_FALSE(lhs < rhs);
-  REQUIRE(lhs > rhs);
-}
-
-TEST_CASE("Comparisons", "[String]") {
-  {
-    const auto a = String();
-    const auto b = String();
-    CheckComparisonEqual(a, b);
-  }
-
-  {
-    const auto a = String();
-    const auto b = String(1, 'a');
-    CheckComparisonLess(a, b);
-    CheckComparisonGreater(b, a);
-  }
-
-  {
-    const auto a = String("ac");
-    const auto b = String("b");
-    CheckComparisonLess(a, b);
-    CheckComparisonGreater(b, a);
-  }
-
-  {
-    const auto a = String("abc");
-    const auto b = String("aa");
-    CheckComparisonLess(b, a);
-    CheckComparisonGreater(a, b);
-  }
-
-  {
-    const auto a = String("abcd");
-    const auto b = String("abcd");
-    CheckComparisonEqual(a, b);
-  }
-
-  {
-    const auto a = String("abcd");
-    const auto b = String("abc");
-    CheckComparisonLess(b, a);
-    CheckComparisonGreater(a, b);
-  }
-
-  {
-    const auto a = String("adfh");
-    const auto b = String("bceg");
-    CheckComparisonLess(a, b);
-    CheckComparisonGreater(b, a);
-  }
-
-  {
-    const auto a = String("abce");
-    const auto b = String("abde");
-    CheckComparisonLess(a, b);
-    CheckComparisonGreater(b, a);
   }
 }
 

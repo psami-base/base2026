@@ -1,1 +1,3 @@
-add_executable(string_test string.cpp string_test.cpp)
+set(STRING_SRC string.cpp)
+
+add_executable(string_test ${STRING_SRC} string_test.cpp)
