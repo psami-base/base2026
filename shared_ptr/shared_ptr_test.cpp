@@ -19,7 +19,7 @@ TEST_CASE("Shared Constructors", "[SharedPtr]") {
 
   SECTION("Parametric") {
     const auto ptr = new int;
-    const auto a = SharedPtr<int>(ptr);
+    const auto a = SharedPtr(ptr);
 
     REQUIRE(a.Get() == ptr);
     REQUIRE(a);
@@ -27,7 +27,7 @@ TEST_CASE("Shared Constructors", "[SharedPtr]") {
 
   SECTION("Copy") {
     const auto ptr = new int;
-    const auto a = SharedPtr<int>(ptr);
+    const auto a = SharedPtr(ptr);
     const auto b = a;
 
     REQUIRE(a.Get() == ptr);
@@ -47,7 +47,7 @@ TEST_CASE("Shared Constructors", "[SharedPtr]") {
     static_assert(std::is_nothrow_move_constructible_v<SharedPtr<int>>, "Move constructor must be marked noexcept");
 
     const auto ptr = new int;
-    auto a = SharedPtr<int>(ptr);
+    auto a = SharedPtr(ptr);
     const auto b = std::move(a);
 
     REQUIRE(a.Get() == nullptr);  // NOLINT check "move-from" is valid state
