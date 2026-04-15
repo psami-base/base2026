@@ -1,12 +1,27 @@
-project(oop-assignments)
-
 cmake_minimum_required(VERSION 3.16)
+project(oop-assignments)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address,undefined -g -Wall -Wextra -pedantic -Werror -Wno-self-assign-overloaded -Wno-missing-braces")
-set(CMAKE_EXPORT_COMPILE_COMMANDS  ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+option(ENABLE_SANITIZERS "Enable AddressSanitizer and UBSanitizer" ON)
+add_compile_options(
+	-Wall
+	-Wextra
+	-pedantic
+	-Werror
+	-Wno-self-assign-overloaded
+	-Wno-missing-braces
+)
+
+if(ENABLE_SANITIZERS)
+	add_compile_options(-fsanitize=address,undefined)
+	add_link_options(-fsanitize=address,undefined)
+endif()
 
 include_directories(.)
 
