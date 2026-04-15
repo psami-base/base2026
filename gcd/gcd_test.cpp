@@ -5,6 +5,7 @@
 #include "gcd.hpp"  // check include guards
 
 #include <type_traits>
+#include <limits>
 #include <cstdint>
 
 TEST_CASE("Gcd", "[Gcd]") {
