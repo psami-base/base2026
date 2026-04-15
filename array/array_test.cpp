@@ -8,9 +8,7 @@
 #include <utility>
 
 template <class T, class U>
-inline constexpr auto kSwappable = requires(T t, U u) {
-  t.Swap(u);
-};
+inline constexpr auto kSwappable = requires(T t, U u) { t.Swap(u); };
 
 template <class T, class U, size_t N>
 void Equals(const Array<T, N>& actual, const std::array<U, N>& required) {
