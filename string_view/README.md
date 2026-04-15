@@ -50,6 +50,7 @@ sv.size();  // всегда O(1)
 * Метода `RemoveSuffix(size_t suffix_size)`, который сдвигает конец строки на `suffix_size`.
 * Метода `Substr(size_t pos, size_t count = -1)`, который формирует из вызывающего объекта `StringView` на подстроку с
   началом `pos` и длины `min(count, Size() - pos)`, если `pos` выходит за границы, то бросает `StringViewOutOfRange` (см. замечание).
+* Операции сравнения (`<`, `>`, `<=`, `>=`, `==`, `!=`), задающие лексикографический порядок;
 
 **Замечания.**
 1. https://en.cppreference.com/w/cpp/string/basic_string_view

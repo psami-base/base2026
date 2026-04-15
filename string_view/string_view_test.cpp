@@ -114,3 +114,86 @@ TEST_CASE("Swap", "[StringView]") {
   sv.Substr(2, 7).Swap(sv);
   Equal(sv, str + 2, 7);
 }
+
+void CheckComparisonEqual(const StringView& lhs, const StringView& rhs) {
+  REQUIRE(lhs == rhs);
+  REQUIRE(lhs <= rhs);
+  REQUIRE(lhs >= rhs);
+  REQUIRE_FALSE(lhs != rhs);
+  REQUIRE_FALSE(lhs < rhs);
+  REQUIRE_FALSE(lhs > rhs);
+}
+
+void CheckComparisonLess(const StringView& lhs, const StringView& rhs) {
+  REQUIRE_FALSE(lhs == rhs);
+  REQUIRE(lhs <= rhs);
+  REQUIRE_FALSE(lhs >= rhs);
+  REQUIRE(lhs != rhs);
+  REQUIRE(lhs < rhs);
+  REQUIRE_FALSE(lhs > rhs);
+}
+
+void CheckComparisonGreater(const StringView& lhs, const StringView& rhs) {
+  REQUIRE_FALSE(lhs == rhs);
+  REQUIRE_FALSE(lhs <= rhs);
+  REQUIRE(lhs >= rhs);
+  REQUIRE(lhs != rhs);
+  REQUIRE_FALSE(lhs < rhs);
+  REQUIRE(lhs > rhs);
+}
+
+TEST_CASE("Comparisons", "[StringView]") {
+  {
+    const auto a = StringView();
+    const auto b = StringView();
+    CheckComparisonEqual(a, b);
+  }
+
+  {
+    const auto a = StringView();
+    const auto b = StringView("a");
+    CheckComparisonLess(a, b);
+    CheckComparisonGreater(b, a);
+  }
+
+  {
+    const auto a = StringView("ac");
+    const auto b = StringView("b");
+    CheckComparisonLess(a, b);
+    CheckComparisonGreater(b, a);
+  }
+
+  {
+    const auto a = StringView("abc");
+    const auto b = StringView("aa");
+    CheckComparisonLess(b, a);
+    CheckComparisonGreater(a, b);
+  }
+
+  {
+    const auto a = StringView("abcd");
+    const auto b = StringView("abcd");
+    CheckComparisonEqual(a, b);
+  }
+
+  {
+    const auto a = StringView("abcd");
+    const auto b = StringView("abc");
+    CheckComparisonLess(b, a);
+    CheckComparisonGreater(a, b);
+  }
+
+  {
+    const auto a = StringView("adfh");
+    const auto b = StringView("bceg");
+    CheckComparisonLess(a, b);
+    CheckComparisonGreater(b, a);
+  }
+
+  {
+    const auto a = StringView("abce");
+    const auto b = StringView("abde");
+    CheckComparisonLess(a, b);
+    CheckComparisonGreater(b, a);
+  }
+}
