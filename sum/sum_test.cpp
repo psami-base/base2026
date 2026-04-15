@@ -4,6 +4,7 @@
 #include "sum.hpp"
 #include "sum.hpp"  // check include guards
 
+#include <cstdint>
 #include <limits>
 
 template <class F, class... Args>
