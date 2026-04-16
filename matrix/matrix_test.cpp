@@ -7,6 +7,8 @@
 #include "matrix.hpp"  // check include guards
 
 #include <array>
+#include <sstream>
+#include <cstdint>
 #include <type_traits>
 #include <utility>
 
