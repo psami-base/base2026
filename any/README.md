@@ -83,7 +83,7 @@ auto x = std::any_cast<int>(a);  // ошибка, так как a содержи
 * Аналогичный оператор присваивания;
 * Методы `Swap(Any& other)`, `Reset()` и `HasValue()` (описания даны выше).
 
-Также реализуйте внешнюю шаблонную функцию `template <class T> T any_cast(const Any& value)`, которая возвращает
+Также реализуйте внешнюю шаблонную функцию `template <class T> T AnyCast(const Any& value)`, которая возвращает
 значение, в случае, если `IHolder` указывает на `AnyHolder<T>` и бросает `BadAnyCast` в противном случае (вам наверняка
 пригодится `dynamic_cast`).
 
