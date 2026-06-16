@@ -1,0 +1,1 @@
+add_executable(word_generator_test word_generator_test.cpp word_generator.cpp)

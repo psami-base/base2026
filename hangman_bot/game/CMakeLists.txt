@@ -1,0 +1,1 @@
+add_executable(hangman_game_test hangman_game_test.cpp)
